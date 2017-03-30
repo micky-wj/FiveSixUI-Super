@@ -11,9 +11,44 @@
 // -----------------------------
 .@{btn-prefix-cls} {
     .btn;
-    .btn-default;
+    &-loading {
+        pointer-events: none;
+        .@{btn-prefix-cls}-loader {
+            display: inline-block;
+            position: relative;
+            width: @font-size-base;
+            height: @font-size-base;
+            border: 1px solid fade(@primary-color, 80%);
+            border-radius: 50%;
+            animation: loading 1s ease-in-out infinite;
+            -webkit-animation: loading 1s ease-in-out infinite;
+            &:after {
+                content: '';
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: @primary-color;
+                position: absolute;
+                top: -2px;
+                left: 2px;
+            }
+        }
+    }
+    &-default {
+        .btn-default;
+    }
     &-primary {
         .btn-primary;
+        &.@{btn-prefix-cls}-loading {
+            background-color: lighten(@primary-color, 20%);
+            border-color: lighten(@primary-color, 20%);
+            .@{btn-prefix-cls}-loader {
+                border-color: fade(#fff, 80%);
+                &:after {
+                    background: #fff;
+                }
+            }
+        }
         .@{btn-prefix-cls}-group &:not(:first-child):not(:last-child) {
             border-right-color: @btn-group-border;
             border-left-color: @btn-group-border;
@@ -45,99 +80,129 @@
     }
     &-danger {
         .btn-danger;
+        &.@{btn-prefix-cls}-loading {
+            background-color: lighten(@btn-danger-bg, 20%);
+            border-color: lighten(@btn-danger-bg, 20%);
+            .@{btn-prefix-cls}-loader {
+                border-color: fade(#fff, 80%);
+                &:after {
+                    background: #fff;
+                }
+            }
+        }
     }
     &-circle,
     &-circle-outline {
         .btn-circle(@btn-prefix-cls);
-    }
-    &:before {
-        position: absolute;
-        top: -1px;
-        left: -1px;
-        bottom: -1px;
-        right: -1px;
-        background: #fff;
-        opacity: 0.35;
-        content: '';
-        border-radius: inherit;
-        z-index: 1;
-        transition: opacity .2s;
-        pointer-events: none;
-        display: none;
-    }
-    &&-loading:before {
-        display: block;
-    }
-    .@{iconfont-css-prefix} {
-        transition: all .3s @ease-in-out;
-    }
-    &&-loading:not(&-circle):not(&-circle-outline) {
-        padding-left: 29px;
-        pointer-events: none;
-        position: relative;
-        .@{iconfont-css-prefix} {
-            margin-left: -14px;
+        .@{btn-prefix-cls}-loader {
+            margin-left: (@btn-circle-size - @font-size-base)/2-1;
+            margin-right: (@btn-circle-size - @font-size-base)/2;
         }
-    }
-    &-sm&-loading:not(&-circle):not(&-circle-outline) {
-        padding-left: 24px;
-        .@{iconfont-css-prefix} {
-            margin-left: -17px;
+        &.@{btn-prefix-cls}-lg .@{btn-prefix-cls}-loader {
+            margin-left: (@btn-circle-size-lg - @font-size-base)/2-1;
+            margin-right: (@btn-circle-size-lg - @font-size-base)/2;
         }
-    }
-    &-group {
-        .btn-group(@btn-prefix-cls);
+        &.@{btn-prefix-cls}-sm .@{btn-prefix-cls}-loader {
+            margin-left: (@btn-circle-size-sm - @font-size-base)/2-1;
+            margin-right: (@btn-circle-size-sm - @font-size-base)/2;
+        }
     }
     &:not(&-circle):not(&-circle-outline)&-icon-only {
         padding-left: 8px;
         padding-right: 8px;
     }
-    // http://stackoverflow.com/a/21281554/3040605
-    &:focus>span,
-    &:active>span {
-        position: relative;
+    &:not(&-circle):not(&-circle-outline):not(&-icon-only) {
+        .@{btn-prefix-cls}-loader {
+            margin-right: 6px;
+        }
     }
-    // To ensure that a space will be placed between character and `Icon`.
-    >.@{iconfont-css-prefix}+span,
-    >span+.@{iconfont-css-prefix} {
-        margin-left: 0.5em;
+    &-group {
+        .btn-group(@btn-prefix-cls);
+        .@{btn-prefix-cls}-clicked {
+            animation: none;
+            transition: none;
+        }
     }
-    &-clicked:after {
-        content: '';
-        position: absolute;
-        top: -1px;
-        left: -1px;
-        bottom: -1px;
-        right: -1px;
-        border-radius: inherit;
-        border: 0 solid @primary-color;
-        opacity: 0.4;
-        animation: buttonEffect .4s;
-        display: block;
+    &-clicked {
+        transition-timing-function: cubic-bezier(.6, 4, .3, .8);
+        animation: bangbang .5s 1;
     }
-    &-danger&-clicked:after {
-        border-color: @btn-danger-bg;
-    }
-    &-background-ghost {
+    &-bg-ghost {
         background: transparent!important;
         border-color: #fff;
         color: #fff;
+        &.disabled,
+        &[disabled] {
+            color: #c0c0c0;
+            border-color: #c0c0c0;
+            background: #343434!important;
+        }
     }
-    &-background-ghost&-primary {
-        .button-variant-ghost(@primary-color);
+    &-bg-ghost&-primary {
+        .button-variant-transpbg(@primary-color);
     }
-    &-background-ghost&-danger {
-        .button-variant-ghost(@btn-danger-bg);
+    &-bg-ghost&-danger {
+        .button-variant-transpbg(@btn-danger-bg);
+    }
+    &-full-width {
+        width: 100%;
     }
 }
 
-@keyframes buttonEffect {
+@keyframes bangbang {
+    from,
     to {
-        opacity: 0;
-        top: -6px;
-        left: -6px;
-        bottom: -6px;
-        right: -6px;
-        border-width: 6px;
+        -webkit-transform: scale(1, 1);
+        transform: scale(1, 1)
+    }
+    25% {
+        -webkit-transform: scale(.9, 1.1);
+        transform: scale(.9, 1.1)
+    }
+    50% {
+        -webkit-transform: scale(1.1, .9);
+        transform: scale(1.1, .9)
+    }
+    75% {
+        -webkit-transform: scale(.95, 1.05);
+        transform: scale(.95, 1.05)
+    }
+}
+
+@-webkit-keyframes bangbang {
+    from,
+    to {
+        -webkit-transform: scale(1, 1);
+        transform: scale(1, 1)
+    }
+    25% {
+        -webkit-transform: scale(.9, 1.1);
+        transform: scale(.9, 1.1)
+    }
+    50% {
+        -webkit-transform: scale(1.1, .9);
+        transform: scale(1.1, .9)
+    }
+    75% {
+        -webkit-transform: scale(.95, 1.05);
+        transform: scale(.95, 1.05)
+    }
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes loading {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }

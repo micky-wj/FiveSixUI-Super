@@ -18,8 +18,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <div style={{ width: 250 }}>
-
+        <div style={{ width: 250, float: 'left' }}>
           <Menu selectedKeys={['item3']} defaultOpenKeys={['subMenu']}>
             <Menu.Item key="item1">item1</Menu.Item>
             <Menu.Item key="item2">item2</Menu.Item>
@@ -51,9 +50,14 @@ class App extends Component {
               </Menu.SubMenu>
             </Menu.SubMenu>
           </Menu>
-          <Button>hhh</Button>
         </div>
-
+        <div style={{ marginTop: '10px', background: '#fff' }}>
+          <Button type="primary" style={{ marginRight: 10 }} loading>按钮</Button>
+          <Button type="dashed" style={{ marginRight: 10 }} >按钮</Button>
+          <Button type="danger" style={{ marginRight: 10 }} >按钮</Button>
+          <Button style={{ marginRight: 10 }} size="large" loading shape="circle"></Button>
+          <Button style={{ marginRight: 10 }} size="large" disabled>按钮</Button>
+        </div>
       </div>
     );
   }

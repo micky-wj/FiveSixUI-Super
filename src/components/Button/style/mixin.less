@@ -1,56 +1,11 @@
 // mixins for button
-// ------------------------
 .button-size(@padding, @font-size, @border-radius) {
     padding: @padding;
     font-size: @font-size;
     border-radius: @border-radius;
 }
 
-
-/**
- * $Mixin
- **/
-
-.fontsize(@size: 24, @base: 16) {
-    font-size: @size + px;
-    font-size: (@size / @base) * 1rem;
-}
-
-
-/* http://www.sitepoint.com/sass-mixins-kickstart-project/ */
-
-.border-radius(@radius) {
-    -webkit-border-radius: @radius;
-    border-radius: @radius;
-    background-clip: padding-box; //stops bg color from leaking outside the border:
-}
-
-.box-shadow(@shadows) {
-    -webkit-box-shadow: @shadows;
-    box-shadow: @shadows;
-}
-
-.transition-timing-function(@timing) {
-    -webkit-transition-timing-function: @timing;
-    -moz-transition-timing-function: @timing;
-    -o-transition-timing-function: @timing;
-    transition-timing-function: @timing;
-}
-
-.animation(@animation) {
-    -webkit-animation: @animation;
-    -moz-animation: @animation;
-    -o-animation: @animation;
-    animation: @animation;
-}
-
-.transition-duration(@duration) {
-    -webkit-transition-duration: @duration;
-    -moz-transition-duration: @duration;
-    -o-transition-duration: @duration;
-    transition-duration: @duration;
-}
-
+// 不可用的按钮
 .button-disabled() {
     &.disabled,
     &[disabled] {
@@ -59,67 +14,60 @@
         &:focus,
         &:active,
         &.active {
-            .button-color(@btn-disable-color, @btn-disable-bg, @btn-disable-border);
+            .button-color(@btn-disable-color, @btn-disable-bg, darken(@btn-disable-bg, 8%));
+            box-shadow: none;
         }
     }
 }
 
-.button-variant-primary(@color, @background) {
+// 主按钮颜色设置
+.button-variant-colorbg(@color, @background) {
     .button-color(@color, @background, @background);
     &:hover,
     &:focus {
-        .button-color(@color, ~"colorPalette(@{background}, 5)", ~"colorPalette(@{background}, 5)");
+        .button-color(@color, tint(@background, 50), tint(@background, 50));
     }
     &:active,
     &.active {
-        .button-color(@color, ~"colorPalette(@{background}, 7)", ~"colorPalette(@{background}, 7)");
+        .button-color(@color, tint(@background, 30), tint(@background, 30));
     }
     .button-disabled();
 }
 
-.button-variant-other(@color, @background, @border) {
+// 白色背景按钮颜色设置
+.button-variant-whitebg(@color, @background, @border) {
     .button-color(@color, @background, @border);
     &:hover,
     &:focus {
-        .box-shadow(~"0 0 0 2px @{background}, 0 0 0 4px darken(#FF1D74, 5%)");
-        .transition-timing-function(cubic-bezier(.6, 4, .3, .8));
-        .animation(gelatine .5s 1);
-        .button-color(@primary-color, @background, @primary-color);
+        .button-color(@primary-color, fade(#000, 3.9%), @primary-color);
     }
     &:active,
     &.active {
-        .button-color(@primary-7,
-        @background,
-        @primary-7);
+        .button-color(@primary-7, fade(#000, 2%), @primary-7);
     }
     .button-disabled();
 }
 
-.button-variant-ghost(@color) {
-    .button-color(@color,
-    transparent,
-    @color);
+// 幽灵按钮颜色设置
+.button-variant-transpbg(@color) {
+    .button-color(@color, transparent, @color);
     &:hover,
     &:focus {
-        .button-color(~"colorPalette(@{color}, 5)",
-        transparent,
-        ~"colorPalette(@{color}, 5)");
+        .button-color(tint(@color, .5), transparent, tint(@color, 50));
     }
     &:active,
     &.active {
-        .button-color(~"colorPalette(@{color}, 7)",
-        transparent,
-        ~"colorPalette(@{color}, 7)");
+        .button-color(tint(@color, .3), transparent, tint(@color, 30));
     }
     .button-disabled();
 }
 
+// 按钮颜色设置
 .button-color(@color, @background, @border) {
     color: @color;
     background-color: @background;
     border-color: @border;
-    // a inside Button which only work in Chrome
-    // http://stackoverflow.com/a/17253457
+    box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
     >a:only-child {
         color: currentColor;
         &:after {
@@ -139,6 +87,7 @@
     display: inline-block;
     >.@{btnClassName} {
         position: relative;
+        box-shadow: none;
         z-index: 1;
         &:hover,
         &:focus,
@@ -152,14 +101,10 @@
     }
     // size
     &-lg>.@{btnClassName} {
-        .button-size(@btn-padding-lg,
-        @btn-font-size-lg,
-        @btn-border-radius-base);
+        .button-size(@btn-padding-lg, @btn-font-size-lg, @btn-border-radius-base);
     }
     &-sm>.@{btnClassName} {
-        .button-size(@btn-padding-sm,
-        @font-size-base,
-        @btn-border-radius-sm);
+        .button-size(@btn-padding-sm, @font-size-base, @btn-border-radius-sm);
         >.@{iconfont-css-prefix} {
             font-size: @font-size-base;
         }
@@ -170,19 +115,19 @@
 // --------------------------------------------------
 .btn() {
     display: inline-block;
+    position: relative;
     margin-bottom: 0;
-    font-weight: @btn-font-weight;
+    border: @border-width-base @border-style-base transparent;
+    background-image: none;
+    line-height: @line-height-base;
     text-align: center;
+    white-space: nowrap;
+    font-weight: @btn-font-weight;
+    user-select: none;
     touch-action: manipulation;
     cursor: pointer;
-    background-image: none;
-    border: @border-width-base @border-style-base transparent;
-    white-space: nowrap;
-    line-height: @line-height-base;
-    .button-size(@btn-padding-base, @font-size-base, @btn-border-radius-base);
-    user-select: none;
     transition: all .3s @ease-in-out;
-    position: relative;
+    .button-size(@btn-padding-base, @font-size-base, @btn-border-radius-base);
     >.@{iconfont-css-prefix} {
         line-height: 1;
     }
@@ -206,47 +151,37 @@
         }
     }
     &-lg {
-        .button-size(@btn-padding-lg;
-        @btn-font-size-lg;
-        @btn-border-radius-base);
+        .button-size(@btn-padding-lg, @btn-font-size-lg, @btn-border-radius-base);
     }
     &-sm {
-        .button-size(@btn-padding-sm;
-        @font-size-base;
-        @btn-border-radius-sm);
+        .button-size(@btn-padding-sm, @font-size-base, @btn-border-radius-sm);
     }
-}
-
-// primary button style
-.btn-primary() {
-    .button-variant-primary(@btn-primary-color, @btn-primary-bg);
 }
 
 // default button style
 .btn-default() {
-    .button-variant-other(@btn-default-color, @btn-default-bg, @btn-default-border);
-    &:hover,
-    &:focus,
-    &:active,
-    &.active {
-        background: #fff;
-    }
+    .button-variant-whitebg(@btn-default-color, @btn-default-bg, @btn-default-border);
 }
 
-// ghost button style
-.btn-ghost() {
-    .button-variant-other(@btn-ghost-color, @btn-ghost-bg, @btn-ghost-border);
-}
-
-// dashed button style
-.btn-dashed() {
-    .button-variant-other(@btn-default-color, @btn-default-bg, @btn-default-border);
-    border-style: dashed;
+// primary button style
+.btn-primary() {
+    .button-variant-colorbg(@btn-primary-color, @btn-primary-bg);
 }
 
 // danger button style
 .btn-danger() {
-    .button-variant-primary(@btn-danger-color, @btn-danger-bg);
+    .button-variant-colorbg(@btn-danger-color, @btn-danger-bg);
+}
+
+// ghost button style
+.btn-ghost() {
+    .button-variant-whitebg(@btn-ghost-color, @btn-ghost-bg, @btn-ghost-border);
+}
+
+// dashed button style
+.btn-dashed() {
+    .button-variant-whitebg(@btn-default-color, @btn-default-bg, @btn-default-border);
+    border-style: dashed;
 }
 
 // circle button: the content only contains icon
